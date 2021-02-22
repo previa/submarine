@@ -1,34 +1,28 @@
-#!/user/bin/perl
-# use strict;
+#!/usr/bin/perl
 use POSIX;
-use File::ReadBackwards;
 
-my $filename = "robot.nl.srt";
-my ($type, $time) = @ARGV;
+my ($filename, $type, $time) = @ARGV;
 my $usage = "-- Usage --
-./sub_adjust.pl [add/sub] [timestring]
+./sub_adjust.pl [file] [add/sub] [timestring]
 -- Example --
-./sub_adjust.pl add \"00:00:00,000\"
+./sub_adjust.pl robot.srt add \"00:00:00,000\"
 ";
+
+print $backup, "\n";
 
 # Read in blocks
 $/ = "\n\n";
 
-if(!defined $type || !defined $time) {
+if(!defined $type || !defined $time || !defined $filename) {
     print $usage;
     exit;
 }
-
-print $type, "\n"; 
-print $time, "\n\n\n";
-
 
 open(FH, '<', $filename) or die $!;
 open(FH_COPY, '>', "${filename}.copy");
 
 while(defined(my $line = <FH>)) {
     my @lines = split('\n', $line);
-    print "\nLines: \n", $line, "\n";
     my @values = split(' --> ', $lines[1]);
     my $n_time_1 = "";
     my $n_time_2 = "";
@@ -39,11 +33,10 @@ while(defined(my $line = <FH>)) {
     } elsif($type eq "sub") {
         $n_time_1 = subtract(parse_time($time), parse_time($values[0]));
         $n_time_2 = subtract(parse_time($time), parse_time($values[1]));
-
     }
 
     print FH_COPY $lines[0], "\n";
-    print FH_COPY $n_time_1, ' ---> ', $n_time_2, "\n";
+    print FH_COPY $n_time_1, ' --> ', $n_time_2, "\n";
     # Add remaining lines
     my $len = scalar @lines;
     for(my $j = 2; $j < $len; $j++) {
@@ -54,6 +47,9 @@ while(defined(my $line = <FH>)) {
 
 close(FH);
 close(FH_COPY);
+
+unlink($filename);
+rename("${filename}.copy", $filename);
 
 sub subtract {
     my ($n_hour, $n_min, $n_sec, $n_ms, $hour, $min, $sec, $ms) = (@_);
@@ -140,12 +136,3 @@ sub parse_time {
     my ($sec, $ms) = split(',', $sec_ms);
     return ($hours, $min, $sec, $ms);
 }
-
-# 1
-# 00:00:03,545 --> 00:00:06,173
-# M'n vader heeft me uit het raam geduwd.
-
-# 2
-# 00:00:06,298 --> 00:00:08,550
-# Het spijt me.
-# -Je bent ziek.
