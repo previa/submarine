@@ -1,4 +1,7 @@
 # Submarine
+
+Add or subtract time from subtitle timestamps
+
 ## Usage
 ```bash
 ./submarine [subtitle file] [add/sub] [time]
