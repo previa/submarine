@@ -3,9 +3,9 @@ use POSIX;
 
 my ($filename, $type, $time) = @ARGV;
 my $usage = "-- Usage --
-./sub_adjust.pl [file] [add/sub] [timestring]
+./submarine.pl [file] [add/sub] [timestring]
 -- Example --
-./sub_adjust.pl robot.srt add \"00:00:00,000\"
+./submarine.pl robot.srt add \"00:00:00,000\"
 ";
 
 print $backup, "\n";
