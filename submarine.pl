@@ -8,8 +8,6 @@ my $usage = "-- Usage --
 ./submarine.pl robot.srt add \"00:00:00,000\"
 ";
 
-print $backup, "\n";
-
 # Read in blocks
 $/ = "\n\n";
 
